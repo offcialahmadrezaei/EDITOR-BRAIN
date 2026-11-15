@@ -1,0 +1,404 @@
+{
+"$schema": "https://json-schema.org/draft/2020-12/schema",
+"$id": "urn:editor-brain:schemas:edit-plan:0.1",
+"title": "EDITOR BRAIN Edit Plan",
+"description": "Versioned, model-independent representation of a video editing project and its executable operations.",
+"type": "object",
+"additionalProperties": false,
+"required": [
+"schema_version",
+"project",
+"assets",
+"timeline",
+"operations",
+"output"
+],
+"properties": {
+"schema_version": {
+"const": "0.1"
+},
+"plan_id": {
+"type": "string",
+"minLength": 1
+},
+"project": {
+"$ref": "#/$defs/project"
+},
+"assets": {
+"type": "array",
+"items": {
+"$ref": "#/$defs/asset"
+}
+},
+"timeline": {
+"$ref": "#/$defs/timeline"
+},
+"operations": {
+"type": "array",
+"items": {
+"$ref": "#/$defs/operation"
+}
+},
+"output": {
+"$ref": "#/$defs/output"
+},
+"execution": {
+"$ref": "#/$defs/execution"
+},
+"metadata": {
+"type": "object",
+"additionalProperties": true
+}
+},
+"$defs": {
+"resolution": {
+"type": "object",
+"additionalProperties": false,
+"required": [
+"width",
+"height"
+],
+"properties": {
+"width": {
+"type": "integer",
+"minimum": 1
+},
+"height": {
+"type": "integer",
+"minimum": 1
+}
+}
+},
+"frame_rate": {
+"type": "number",
+"exclusiveMinimum": 0,
+"maximum": 240
+},
+"project": {
+"type": "object",
+"additionalProperties": false,
+"required": [
+"id",
+"name",
+"settings"
+],
+"properties": {
+"id": {
+"type": "string",
+"minLength": 1
+},
+"name": {
+"type": "string",
+"minLength": 1
+},
+"description": {
+"type": "string"
+},
+"settings": {
+"type": "object",
+"additionalProperties": false,
+"required": [
+"resolution",
+"frame_rate"
+],
+"properties": {
+"resolution": {
+"$ref": "#/$defs/resolution"
+},
+"frame_rate": {
+"$ref": "#/$defs/frame_rate"
+},
+"audio_sample_rate": {
+"type": "integer",
+"enum": [
+22050,
+44100,
+48000,
+96000
+]
+},
+"color_space": {
+"type": "string"
+}
+}
+}
+}
+},
+"asset": {
+"type": "object",
+"additionalProperties": false,
+"required": [
+"id",
+"type",
+"uri"
+],
+"properties": {
+"id": {
+"type": "string",
+"minLength": 1
+},
+"type": {
+"type": "string",
+"enum": [
+"video",
+"audio",
+"image",
+"subtitle",
+"other"
+]
+},
+"uri": {
+"type": "string",
+"minLength": 1
+},
+"duration": {
+"type": "number",
+"minimum": 0
+},
+"media_info": {
+"type": "object",
+"additionalProperties": true
+},
+"metadata": {
+"type": "object",
+"additionalProperties": true
+}
+}
+},
+"timeline": {
+"type": "object",
+"additionalProperties": false,
+"required": [
+"tracks"
+],
+"properties": {
+"duration": {
+"type": "number",
+"minimum": 0
+},
+"tracks": {
+"type": "array",
+"items": {
+"$ref": "#/$defs/track"
+}
+}
+}
+},
+"track": {
+"type": "object",
+"additionalProperties": false,
+"required": [
+"id",
+"type",
+"clips"
+],
+"properties": {
+"id": {
+"type": "string",
+"minLength": 1
+},
+"type": {
+"type": "string",
+"enum": [
+"video",
+"audio",
+"subtitle",
+"overlay"
+]
+},
+"name": {
+"type": "string"
+},
+"clips": {
+"type": "array",
+"items": {
+"$ref": "#/$defs/clip"
+}
+}
+}
+},
+"clip": {
+"type": "object",
+"additionalProperties": false,
+"required": [
+"id",
+"asset_id",
+"start",
+"duration"
+],
+"properties": {
+"id": {
+"type": "string",
+"minLength": 1
+},
+"asset_id": {
+"type": "string",
+"minLength": 1
+},
+"start": {
+"type": "number",
+"minimum": 0
+},
+"duration": {
+"type": "number",
+"exclusiveMinimum": 0
+},
+"source_in": {
+"type": "number",
+"minimum": 0
+},
+"source_out": {
+"type": "number",
+"exclusiveMinimum": 0
+},
+"metadata": {
+"type": "object",
+"additionalProperties": true
+}
+}
+},
+"operation": {
+"type": "object",
+"additionalProperties": false,
+"required": [
+"id",
+"type",
+"depends_on",
+"parameters"
+],
+"properties": {
+"id": {
+"type": "string",
+"minLength": 1
+},
+"type": {
+"type": "string",
+"enum": [
+"trim",
+"split",
+"concat",
+"scale",
+"crop",
+"transform",
+"color_adjust",
+"audio_gain",
+"fade",
+"text_overlay",
+"subtitle",
+"transition",
+"render",
+"custom"
+]
+},
+"depends_on": {
+"type": "array",
+"uniqueItems": true,
+"items": {
+"type": "string",
+"minLength": 1
+}
+},
+"input_asset_ids": {
+"type": "array",
+"uniqueItems": true,
+"items": {
+"type": "string",
+"minLength": 1
+}
+},
+"input_clip_ids": {
+"type": "array",
+"uniqueItems": true,
+"items": {
+"type": "string",
+"minLength": 1
+}
+},
+"parameters": {
+"type": "object",
+"additionalProperties": true
+},
+"output_asset_id": {
+"type": "string",
+"minLength": 1
+},
+"metadata": {
+"type": "object",
+"additionalProperties": true
+}
+}
+},
+"output": {
+"type": "object",
+"additionalProperties": false,
+"required": [
+"format"
+],
+"properties": {
+"format": {
+"type": "string",
+"enum": [
+"mp4",
+"mov",
+"mkv",
+"webm",
+"wav",
+"mp3",
+"other"
+]
+},
+"destination_uri": {
+"type": "string"
+},
+"resolution": {
+"$ref": "#/$defs/resolution"
+},
+"frame_rate": {
+"$ref": "#/$defs/frame_rate"
+},
+"quality": {
+"type": "string",
+"enum": [
+"draft",
+"standard",
+"high",
+"maximum"
+]
+}
+}
+},
+"execution": {
+"type": "object",
+"additionalProperties": false,
+"properties": {
+"resource_policy": {
+"type": "string",
+"enum": [
+"auto",
+"quality_first",
+"time_first",
+"memory_first"
+],
+"default": "auto"
+},
+"priority": {
+"type": "string",
+"enum": [
+"low",
+"normal",
+"high"
+],
+"default": "normal"
+},
+"allow_quality_degradation": {
+"type": "boolean",
+"default": false
+},
+"max_parallel_tasks": {
+"type": "integer",
+"minimum": 1
+}
+}
+}
+}
+}
