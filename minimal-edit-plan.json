@@ -1,0 +1,24 @@
+{
+  "schema_version": "0.1",
+  "plan_id": "minimal-example-001",
+  "project": {
+    "id": "project-001",
+    "name": "Minimal Example",
+    "settings": {
+      "resolution": {
+        "width": 1280,
+        "height": 720
+      },
+      "frame_rate": 30
+    }
+  },
+  "assets": [],
+  "timeline": {
+    "tracks": []
+  },
+  "operations": [],
+  "output": {
+    "format": "mp4",
+    "quality": "standard"
+  }
+}

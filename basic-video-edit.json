@@ -1,0 +1,121 @@
+{
+  "schema_version": "0.1",
+  "plan_id": "basic-video-edit-001",
+  "project": {
+    "id": "project-002",
+    "name": "Basic Video Edit",
+    "description": "A simple trim, scale, and render pipeline.",
+    "settings": {
+      "resolution": {
+        "width": 1920,
+        "height": 1080
+      },
+      "frame_rate": 30,
+      "audio_sample_rate": 48000,
+      "color_space": "bt709"
+    }
+  },
+  "assets": [
+    {
+      "id": "asset-video-001",
+      "type": "video",
+      "uri": "media/input.mp4",
+      "duration": 42.5,
+      "media_info": {
+        "width": 3840,
+        "height": 2160,
+        "frame_rate": 30,
+        "video_codec": "h264"
+      }
+    }
+  ],
+  "timeline": {
+    "duration": 20,
+    "tracks": [
+      {
+        "id": "track-video-001",
+        "type": "video",
+        "name": "Main Video",
+        "clips": [
+          {
+            "id": "clip-video-001",
+            "asset_id": "asset-video-001",
+            "start": 0,
+            "duration": 20,
+            "source_in": 5,
+            "source_out": 25
+          }
+        ]
+      }
+    ]
+  },
+  "operations": [
+    {
+      "id": "op-trim-001",
+      "type": "trim",
+      "depends_on": [],
+      "input_asset_ids": [
+        "asset-video-001"
+      ],
+      "input_clip_ids": [
+        "clip-video-001"
+      ],
+      "parameters": {
+        "source_in": 5,
+        "source_out": 25
+      },
+      "output_asset_id": "asset-trimmed-001"
+    },
+    {
+      "id": "op-scale-001",
+      "type": "scale",
+      "depends_on": [
+        "op-trim-001"
+      ],
+      "input_asset_ids": [
+        "asset-trimmed-001"
+      ],
+      "parameters": {
+        "width": 1920,
+        "height": 1080,
+        "fit_mode": "contain"
+      },
+      "output_asset_id": "asset-scaled-001"
+    },
+    {
+      "id": "op-render-001",
+      "type": "render",
+      "depends_on": [
+        "op-scale-001"
+      ],
+      "input_asset_ids": [
+        "asset-scaled-001"
+      ],
+      "parameters": {
+        "video_codec": "h264",
+        "audio_codec": "aac",
+        "preset": "medium"
+      }
+    }
+  ],
+  "output": {
+    "format": "mp4",
+    "destination_uri": "output/basic-video-edit.mp4",
+    "resolution": {
+      "width": 1920,
+      "height": 1080
+    },
+    "frame_rate": 30,
+    "quality": "high"
+  },
+  "execution": {
+    "resource_policy": "memory_first",
+    "priority": "normal",
+    "allow_quality_degradation": false,
+    "max_parallel_tasks": 1
+  },
+  "metadata": {
+    "example": true,
+    "purpose": "schema-and-pipeline-demonstration"
+  }
+}
